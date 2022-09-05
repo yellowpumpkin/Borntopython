@@ -25,6 +25,7 @@ db = database()
 class UI_Inputwood(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.scrollAreaWidgetContents = QtWidgets.QWidget()
         self.setWindowTitle("ข้อมูลไม้เข้า")
         self.setWindowIcon(QIcon('icons/wood01.png'))
         self.setGeometry(450, 50, 1280, 1024)
@@ -35,12 +36,12 @@ class UI_Inputwood(QMainWindow):
     def UI(self):
 
         self.toolBar()
-        self.tablewidgets()
-        self.Widget()
+        self.displayTable()
+        self.display()
         self.layouts()
-        self.funcDisplayInputWood()
+        self.funcFetchData()
 
-    ####################################### Tool Bar #################################################
+# Tool Bar
     def toolBar(self):
         self.tb = self.addToolBar("Tool Bar")
         self.tb.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
@@ -79,8 +80,8 @@ class UI_Inputwood(QMainWindow):
         self.addSale.triggered.connect(self.funcSale)
         self.tb.addSeparator()
 
-    ###################################### Widget ####################################################
-    def Widget(self):
+# Widget
+    def display(self):
         self.wg = QWidget()
         self.setCentralWidget((self.wg))
 
@@ -93,42 +94,41 @@ class UI_Inputwood(QMainWindow):
         self.searchButton = QPushButton("Search")
 
         # combobox
-        self.sizeText = QLabel("ขนาดไม้")
-        self.thickText = QLabel("หนา")
-        self.wideText = QLabel("x กว้าง")
-        self.longText = QLabel("x ยาว")
+        self.sizeText = QLabel("size")
+        self.thickText = QLabel("thick")
+        self.wideText = QLabel("x wide")
+        self.longText = QLabel("x long")
 
         # combobox thick
         self.combboxThick = QComboBox()
-        Thick = db.dataThick()
+        Thick = db.sqlThick()
         for data_thick in Thick:
             self.combboxThick.addItems([str(data_thick)])
 
         # combobox wide
         self.comboboxWide = QComboBox()
-        Wide = db.dataWide()
+        Wide = db.sqlWide()
         for data_wide in Wide:
             self.comboboxWide.addItems([str(data_wide)])
 
         # combobox long
         self.comboboxLong = QComboBox()
-        Long = db.dataLong()
+        Long = db.sqlLong()
         for data_long in Long:
             self.comboboxLong.addItems([str(data_long)])
 
-        # combobox woodtype
-        self.typeText = QLabel("ประเภทไม้ : ")
+        # combobox type
+        self.typeText = QLabel("Type : ")
         self.comboboxType = QComboBox()
-        Type = db.dataType()
+        Type = db.sqlType()
         for data_type in Type:
             self.comboboxType.addItems([str(data_type)])
 
+        # calender
         self.dateText = QLabel("วันที่รับไม้เข้า : ")
         self.date = QDateEdit(self)
         self.date.setDate(QDate.currentDate())
         self.date.setDateTime(QtCore.QDateTime(QtCore.QDate(2023, 1, 1), QtCore.QTime(0, 0, 0)))
-
-        # self.date.setGeometry(300,300,350,200)
         self.date.setAcceptDrops(False)
         self.date.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.date.setAlignment(QtCore.Qt.AlignCenter)
@@ -137,12 +137,15 @@ class UI_Inputwood(QMainWindow):
         self.date.setCurrentSection(QtWidgets.QDateTimeEdit.DaySection)
         self.date.setCalendarPopup(True)
 
+        # btn
         self.btn_insert_input = QPushButton("insert")
+        self.btn_refresh = QPushButton("Refresh")
+
         self.btn_save_input = QPushButton()
         self.btn_save_input.setIcon(QIcon('icons/excel (2).png'))
 
-    ####################################### Table  #################################################
-    def tablewidgets(self):
+# Table
+    def displayTable(self):
         self.inputTable = QTableWidget()
         self.inputTable.setColumnCount(9)
         self.inputTable.setHorizontalHeaderItem(0, QTableWidgetItem("วันที่รับไม้เข้า"))
@@ -156,90 +159,95 @@ class UI_Inputwood(QMainWindow):
         self.inputTable.setHorizontalHeaderItem(8, QTableWidgetItem("Manage"))
         self.inputTable.doubleClicked.connect(self.funchandleButtonClicked)
         self.inputTable.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.inputTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
         #
 
-    ####################################### Layouts #################################################
+# Layouts
     def layouts(self):
+        # QV & QH
         self.mainLayout = QVBoxLayout()
-        self.mainLeftLayout = QHBoxLayout()
-        self.mainRightLayout = QHBoxLayout()
-        self.rightTopLayout = QHBoxLayout()
-        self.rightMiddleLayout = QVBoxLayout()
-        self.rightBottomLayout = QHBoxLayout()
-        self.centerMiddleLayout = QHBoxLayout()
+        self.mainTableLayout = QHBoxLayout()
+        self.mainTopLayout = QHBoxLayout()
+
+        self.leftTopLayout = QHBoxLayout()
+        self.middleTopLayout = QHBoxLayout()
+        self.rightTopLayout = QVBoxLayout()
 
         self.searchGropBox = QGroupBox()
         self.sizeGrop = QGroupBox()
         self.btnGrop = QWidget()
 
-        # Right Middle Layouts
-        self.rightBottomLayout.addWidget(self.searchText)
-        self.rightBottomLayout.addWidget(self.searchEntry)
-        self.rightBottomLayout.addWidget(self.searchButton)
-        self.rightBottomLayout.addWidget(self.dateText)
-        self.rightBottomLayout.addWidget(self.date)
-        self.searchGropBox.setLayout(self.rightBottomLayout)
+        # Left Top aka Search
+        self.leftTopLayout.addWidget(self.searchText)
+        self.leftTopLayout.addWidget(self.searchEntry)
+        self.leftTopLayout.addWidget(self.searchButton)
+        self.leftTopLayout.addWidget(self.dateText)
+        self.leftTopLayout.addWidget(self.date)
+        self.searchGropBox.setLayout(self.leftTopLayout)
 
-        self.rightTopLayout.addWidget(self.sizeText)
-        self.rightTopLayout.addWidget(self.thickText)
-        self.rightTopLayout.addWidget(self.combboxThick)
-        self.rightTopLayout.addWidget(self.wideText)
-        self.rightTopLayout.addWidget(self.comboboxWide)
-        self.rightTopLayout.addWidget(self.longText)
-        self.rightTopLayout.addWidget(self.comboboxLong)
-        self.rightTopLayout.addWidget(self.typeText)
-        self.rightTopLayout.addWidget(self.comboboxType)
-        self.sizeGrop.setLayout(self.rightTopLayout)
+        # Middle Top aka Size
+        self.middleTopLayout.addWidget(self.sizeText)
+        self.middleTopLayout.addWidget(self.thickText)
+        self.middleTopLayout.addWidget(self.combboxThick)
+        self.middleTopLayout.addWidget(self.wideText)
+        self.middleTopLayout.addWidget(self.comboboxWide)
+        self.middleTopLayout.addWidget(self.longText)
+        self.middleTopLayout.addWidget(self.comboboxLong)
+        self.middleTopLayout.addWidget(self.typeText)
+        self.middleTopLayout.addWidget(self.comboboxType)
+        self.sizeGrop.setLayout(self.middleTopLayout)
 
-        self.rightMiddleLayout.addWidget(self.btn_insert_input)
-        self.rightMiddleLayout.addWidget(self.btn_save_input)
-        self.btnGrop.setLayout(self.rightMiddleLayout)
+        # Right Top aka Btn
+        self.rightTopLayout.addWidget(self.btn_insert_input)
+        self.rightTopLayout.addWidget(self.btn_refresh)
+        self.rightTopLayout.addWidget(self.btn_save_input)
+        self.btnGrop.setLayout(self.rightTopLayout)
 
         # Layout Table
-        self.mainLeftLayout.addWidget(self.inputTable)
+        self.mainTableLayout.addWidget(self.inputTable)
 
         # All Layout
-        self.mainRightLayout.addWidget(self.searchGropBox)
-        self.mainRightLayout.addWidget(self.sizeGrop)
-        self.mainRightLayout.addWidget(self.btnGrop)
-        self.mainLayout.addLayout(self.mainRightLayout)
-        self.mainLayout.addLayout(self.mainLeftLayout)
+        self.mainTopLayout.addWidget(self.searchGropBox)
+        self.mainTopLayout.addWidget(self.sizeGrop)
+        self.mainTopLayout.addWidget(self.btnGrop)
+        self.mainLayout.addLayout(self.mainTopLayout)
+        self.mainLayout.addLayout(self.mainTableLayout)
 
         # Main Layout
         self.wg.setLayout(self.mainLayout)
 
-    ################################# Fucntion Home ####################################
+# Function Home
     def funcHome(self):
         self.newHome = main.Ui_MainWindow()
         self.hide()
 
-    ################################# Fucntion Cut  ##########################################
+# Function Cut
     def funcCut(self):
         self.newCut = cuttingWood.UI_Cutwood()
         self.hide()
 
-    ################################# Fucntion Withdraw ######################################
+# Function Withdraw
     def funcWithdraw(self):
         self.newWithdraw = withdrawWood.UI_Withdraw()
         self.hide()
 
-    ################################# Fucntion Resize ######################################
+# Function Resize
     def funcResize(self):
         self.newResize = resizeWood.UI_Resizewood()
         self.hide()
 
-    ################################# Fucntion Heat ######################################
+# Function Heat
     def funcHeat(self):
         self.newHeat = heatWood.UI_Heatwood()
         self.hide()
 
-    ################################# Fucntion Sale ######################################
+# Function Sale
     def funcSale(self):
         self.newHeat = saleWood.UI_Salewood()
         self.hide()
 
-    ###############################3# Display ###########################################
-    def funcDisplayInputWood(self):
+# Func
+    def funcFetchData(self):
         for i in reversed(range(self.inputTable.rowCount())):
             self.inputTable.removeRow(i)
         query = db.dataTableInput()
@@ -266,24 +274,24 @@ class UI_Inputwood(QMainWindow):
             self.inputTable.setCellWidget(row_number, 8, self.btn_edit)
         self.inputTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-    ################################# Edit ####################################
+# Button Clicked
     def funchandleButtonClicked(self):
         global Input_id
         listInput = []
         for i in range(0, 8):
             listInput.append(self.inputTable.item(self.inputTable.currentRow(), i).text())
-        # print("Listinput = ",listInput)
         Input_id = listInput[1]
-        # return Input_id
-
         self.neweditInput = editsInputwood.UI_editsInputwood(listInput,Input_id)
 
-#################################### Main ###############################################
+    def refresh(self):
+       pass
+
+
+
+# Main
 # def main():
 #     app = QtWidgets.QApplication(sys.argv)
 #     window = UI_Inputwood()
 #     sys.exit(app.exec_())
-#
-#
 # if __name__ == "__main__":
 #     main()

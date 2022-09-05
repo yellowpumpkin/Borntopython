@@ -22,54 +22,51 @@ class  UI_Salewood (QMainWindow):
         self.show()
 
     def UI(self):
-        self.mainDesign()
         self.toolBar()
-        self.Widget()
+        self.display()
         self.layouts()
 
-
-    def mainDesign(self):
-        pass
-
+# ToolBar
     def toolBar(self):
         self.tb = self.addToolBar("Tool Bar")
         self.tb.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        ################################# หน้าหลัก ############################################
+# หน้าหลัก
         self.addHome = QAction(QIcon('icons/warehouse01.png'), "หน้าหลัก", self)
         self.tb.addAction(self.addHome)
         self.addHome.triggered.connect(self.funcHome)
         self.tb.addSeparator()
-        ################################## รับไม้เข้า ############################################
+        # รับไม้เข้า
         self.addInput = QAction(QIcon('icons/forklift.png'), "รายการับไม้เข้า", self)
         self.tb.addAction(self.addInput)
-        self.addInput.triggered.connect(self.funcAddInput)
+        self.addInput.triggered.connect(self.funcInput)
         self.tb.addSeparator()
-        ################################## Cutting ############################################
+        # Cutting
         self.addCut=QAction(QIcon('icons/cutting.png'),"รายการตัด/ผ่า",self)
         self.tb.addAction(self.addCut)
         self.addCut.triggered.connect(self.funcCut)
         self.tb.addSeparator()
-        ################################## Resize ###########################################
+        # Resize
         self.addResize = QAction(QIcon('icons/cutting.png'), "รายการแปลงไม้", self)
         self.tb.addAction(self.addResize)
         self.addResize.triggered.connect(self.funcResize)
         self.tb.addSeparator()
-        ################################# Heat #############################################
+        # Heat
         self.addHeat = QAction(QIcon('icons/heat01.png'), "รายการอบไม้", self)
         self.tb.addAction(self.addHeat)
         self.addHeat.triggered.connect(self.funcHeat)
         self.tb.addSeparator()
-        ################################## เบิกไม้ #############################################
+        # เบิกไม้
         self.addWithdraw = QAction(QIcon('icons/wood02.png'), "รายการเบิกไม้", self)
         self.tb.addAction(self.addWithdraw)
         self.addWithdraw.triggered.connect(self.funcWithdraw)
         self.tb.addSeparator()
-        ################################## Sale ############################################
+        # Sale
         self.addSale = QAction(QIcon('icons/sale01.png'), "รายการขาย", self)
         self.tb.addAction(self.addSale)
         self.tb.addSeparator()
 
-    def Widget(self):
+# Display
+    def display(self):
         self.wg = QWidget()
         self.setCentralWidget((self.wg))
         self.buttons = QPushButton("s")
@@ -82,6 +79,7 @@ class  UI_Salewood (QMainWindow):
         self.mainLeftLayout = QHBoxLayout()
         self.mainRightLayout = QHBoxLayout()
         self.rightTopLayout = QHBoxLayout()
+
         self.rightMiddleLayout = QVBoxLayout()
         self.rightBottomLayout = QHBoxLayout()
         self.centerMiddleLayout = QHBoxLayout()
@@ -89,14 +87,13 @@ class  UI_Salewood (QMainWindow):
         self.sizeGropBox = QGroupBox("")
 
 
-        ################### Right Middle Layouts ############################
+        # Right Middle Layouts
         self.rightBottomLayout.addWidget(self.buttons)
         self.rightBottomLayout.addWidget(self.buttona)
         self.rightBottomLayout.addWidget(self.buttonl)
         self.rightBottomLayout.addWidget(self.buttone)
         self.sizeGropBox.setLayout(self.rightBottomLayout)
 
-        ######################  ##############################################
 
         ###################### All Layout ####################################
         self.mainRightLayout.addWidget(self.sizeGropBox)
@@ -106,37 +103,37 @@ class  UI_Salewood (QMainWindow):
         ######################  Main Layout ###################################
         self.wg.setLayout(self.mainLayout)
 
-################################# Fucntion Home ####################################
+# Function Home
     def funcHome(self):
         self.newHome=main.Ui_MainWindow()
         self.close()
 
-################################# Fucntion AddProduct ####################################
-    def funcAddInput (self):
+# Function AddProduct
+    def funcInput (self):
         self.newInput=inputWood.UI_Inputwood()
         self.close()
 
-################################# Fucntion Cut  ##########################################
+# Function Cut
     def funcCut(self):
         self.newCut = cuttingWood.UI_Cutwood()
         self.close()
 
-################################# Fucntion Withdraw ######################################
+# Function Withdraw
     def funcWithdraw(self):
         self.newWithdraw=withdrawWood.UI_Withdraw()
         self.close()
 
-################################# Fucntion Heat ######################################
+# Function Heat
     def funcHeat(self):
         self.newHeat=heatWood.UI_Heatwood()
         self.close()
 
-################################# Fucntion Sale ######################################
+# Function Sale
     def funcResize(self):
         self.newResize=resizeWood.UI_Resizewood()
         self.close()
 
-
+# Main
 # def main():
 #     app = QtWidgets.QApplication(sys.argv)
 #     window=UI_Salewood()

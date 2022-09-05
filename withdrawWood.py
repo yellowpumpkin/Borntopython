@@ -23,20 +23,18 @@ class  UI_Withdraw (QMainWindow):
         self.show()
 
     def UI(self):
-        self.mainDesign()
+
         self.toolBar()
-        self.tablewidgets()
-        self.Widget()
+        self.displayTable()
+        self.display()
         self.layouts()
 
-    def mainDesign(self):
-        pass
-        ####################################### Tool Bar #################################################
-    #
+
+# Tool Bar
     def toolBar(self):
         self.tb = self.addToolBar("Tool Bar")
         self.tb.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        ################################# หน้าหลัก ############################################
+        ################################# หน้าหลัก
         self.addHome = QAction(QIcon('icons/warehouse01.png'), "หน้าหลัก", self)
         self.tb.addAction(self.addHome)
         self.addHome.triggered.connect(self.funcHome)
@@ -70,15 +68,16 @@ class  UI_Withdraw (QMainWindow):
         self.tb.addAction(self.addSale)
         self.addSale.triggered.connect(self.funcSale)
         self.tb.addSeparator()
-###################################### Widget ####################################################
-    def Widget(self):
+
+# Display
+    def display(self):
         self.wg=QWidget()
         self.setCentralWidget((self.wg))
         self.withdrawText = QLabel("ต้องการเบิกไม้หรือไม่")
         self.withdrawButton = QPushButton("เบิก")
 
-######################################### Table  #################################################
-    def tablewidgets(self):
+# Table
+    def displayTable(self):
         self.withdrawTable = QTableWidget()
         self.withdrawTable.setRowCount(100)
         self.withdrawTable.setColumnCount(9)
@@ -97,60 +96,59 @@ class  UI_Withdraw (QMainWindow):
 ####################################### Layouts #################################################
     def layouts(self):
         self.mainLayout = QVBoxLayout()
-        self.mainLeftLayout = QHBoxLayout()
-        self.mainRightLayout = QHBoxLayout()
+        self.mainTableLayout = QHBoxLayout()
+        self.mainTopLayout = QHBoxLayout()
+        self.leftTopLayout = QHBoxLayout()
+        self.middleTopLayout = QVBoxLayout()
         self.rightTopLayout = QHBoxLayout()
-        self.rightMiddleLayout = QVBoxLayout()
-        self.rightBottomLayout = QHBoxLayout()
         self.centerMiddleLayout = QHBoxLayout()
-
         self.sizeGropBox = QGroupBox("")
 
+        # Left Top
+        self.leftTopLayout.addWidget(self.withdrawText)
+        self.leftTopLayout.addWidget(self.withdrawButton)
+        self.sizeGropBox.setLayout(self.leftTopLayout)
 
-        ################### Right Middle Layouts ############################
-        self.rightBottomLayout.addWidget(self.withdrawText)
-        self.rightBottomLayout.addWidget(self.withdrawButton)
-        self.sizeGropBox.setLayout(self.rightBottomLayout)
+        # Layout Table
+        self.mainTableLayout.addWidget(self.withdrawTable)
+        # All Layout
+        self.mainTopLayout.addWidget(self.sizeGropBox)
+        self.mainLayout.addLayout(self.mainTopLayout)
+        self.mainLayout.addLayout(self.mainTableLayout)
 
-        ######################  ##############################################
-        self.mainLeftLayout.addWidget(self.withdrawTable)
-        ###################### All Layout ####################################
-        self.mainRightLayout.addWidget(self.sizeGropBox)
-        self.mainLayout.addLayout(self.mainRightLayout)
-        self.mainLayout.addLayout(self.mainLeftLayout)
-
-        ######################  Main Layout ###################################
+        #  Main Layout
         self.wg.setLayout(self.mainLayout)
 
-################################# Fucntion Home ####################################
+# Function Home
     def funcHome(self):
         self.newHome=main.Ui_MainWindow()
         self.close()
-################################# Fucntion Cut  ##########################################
+# Function Cut
     def funcCut(self):
         self.newCut = cuttingWood.UI_Cutwood()
         self.close()
 
-################################# Fucntion AddProduct ####################################
+# Function AddProduct
     def funcAddInput (self):
         self.newInput=inputWood.UI_Inputwood()
         self.close()
 
-################################# Fucntion Resize ######################################
+# Function Resize
     def funcResize(self):
         self.newResize=resizeWood.UI_Resizewood()
         self.close()
 
-################################# Fucntion Heat ######################################
+# Function Heat
     def funcHeat(self):
         self.newHeat=heatWood.UI_Heatwood()
         self.close()
 
-################################# Fucntion Sale ######################################
+# Function Sale
     def funcSale(self):
         self.newSale=saleWood.UI_Salewood()
         self.close()
-##################################### Main ###############################################
+
+#Main
 # def main():
 #     app = QtWidgets.QApplication(sys.argv)
 #     window=UI_Withdraw()

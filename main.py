@@ -1,10 +1,8 @@
-from PyQt5 import  QtWidgets
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
 import sys
-
-import sqlite3
 
 import heatWood
 import inputWood
@@ -12,9 +10,11 @@ import resizeWood
 import saleWood
 import withdrawWood
 import cuttingWood
+
 from moduleDB import database
 
 db = database()
+
 
 class Ui_MainWindow(QMainWindow):
     def __init__(self):
@@ -28,12 +28,12 @@ class Ui_MainWindow(QMainWindow):
 
     def UI(self):
         self.toolBar()
-        self.tablewidgets()
-        self.Widget()
+        self.display()
+        self.displayTable()
         self.layouts()
-        self.funcDisplayMain()
+        self.funcFetchDataMain()
 
-    ####################################### Tool Bar #################################################
+    # Tool Bar
     def toolBar(self):
         self.tb = self.addToolBar("Tool Bar")
         self.tb.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
@@ -44,7 +44,7 @@ class Ui_MainWindow(QMainWindow):
         # รับไม้เข้า
         self.addInput = QAction(QIcon('icons/forklift.png'), "รายการรับไม้เข้า", self)
         self.tb.addAction(self.addInput)
-        self.addInput.triggered.connect(self.funcAddInput)
+        self.addInput.triggered.connect(self.funcInput)
         self.tb.addSeparator()
         # Cutting
         self.addCut = QAction(QIcon('icons/cutting.png'), "รายการตัด/ผ่า", self)
@@ -72,8 +72,8 @@ class Ui_MainWindow(QMainWindow):
         self.addSale.triggered.connect(self.funcSale)
         self.tb.addSeparator()
 
-    ###################################### Widget ####################################################
-    def Widget(self):
+    # Display
+    def display(self):
         self.wg = QWidget()
         self.setCentralWidget((self.wg))
 
@@ -91,7 +91,6 @@ class Ui_MainWindow(QMainWindow):
         self.avaiableWood = QRadioButton("Avaiable")
         self.unavaiableWood = QRadioButton("Unavaiable")
         # self.listBtn = QPushButton("List")
-        # self.listBtn.clicked.connect(self.fucnLis)
 
         # combobox
         self.sizeText = QLabel("| ขนาดไม้ : ")
@@ -101,34 +100,32 @@ class Ui_MainWindow(QMainWindow):
 
         # combobox thick
         self.comboThick = QComboBox()
-        Thick = db.dataThick()
-
+        Thick = db.sqlThick()
         for data_thick in Thick:
             self.comboThick.addItems([str(data_thick)])
 
         # combobox wide
         self.comboWide = QComboBox()
-        Wide = db.dataWide()
+        Wide = db.sqlWide()
         for data_wide in Wide:
             self.comboWide.addItems([str(data_wide)])
 
         # combobox long
         self.comboLong = QComboBox()
-        Long = db.dataLong()
+        Long = db.sqlLong()
         for data_long in Long:
             self.comboLong.addItems([str(data_long)])
 
-        # combobox woodtype
+        # combobox type
         self.typeText = QLabel("| ประเภทไม้ : ")
         self.comboType = QComboBox()
-        Type = db.dataType()
+        Type = db.sqlType()
         for data_type in Type:
             self.comboType.addItems([str(data_type)])
 
-    ####################################### Table  #################################################
-    def tablewidgets(self):
+    # Display Table
+    def displayTable(self):
         self.homeTable = QTableWidget()
-
         self.homeTable.setColumnCount(9)
         self.homeTable.setHorizontalHeaderItem(0, QTableWidgetItem("Wood ID"))
         self.homeTable.setHorizontalHeaderItem(1, QTableWidgetItem("Code"))
@@ -140,70 +137,64 @@ class Ui_MainWindow(QMainWindow):
         self.homeTable.setHorizontalHeaderItem(7, QTableWidgetItem("Volume"))
         self.homeTable.setHorizontalHeaderItem(8, QTableWidgetItem("Active"))
 
-    ####################################### Layouts #################################################
+    # Layouts
     def layouts(self):
         self.mainLayout = QVBoxLayout()
-        self.mainLeftLayout = QHBoxLayout()
+        self.mainTableLayout = QHBoxLayout()
         self.mainRightLayout = QHBoxLayout()
+
+        self.leftTopLayout = QHBoxLayout()
+        self.middleTopLayout = QVBoxLayout()
         self.rightTopLayout = QVBoxLayout()
-        self.rightMiddleLayout = QVBoxLayout()
-        self.rightBottomLayout = QHBoxLayout()
+
         self.centerMiddleLayout = QHBoxLayout()
 
         self.woodGroupBox = QGroupBox("Main/Head")
         self.middleGropBox = QGroupBox("Activity")
         self.searchGropBox = QGroupBox("Search")
 
+        # Left Top or Search
+        self.leftTopLayout.addWidget(self.thickText)
+        self.leftTopLayout.addWidget(self.comboThick)
+        self.leftTopLayout.addWidget(self.wideText)
+        self.leftTopLayout.addWidget(self.comboWide)
+        self.leftTopLayout.addWidget(self.longText)
+        self.leftTopLayout.addWidget(self.comboLong)
+        self.leftTopLayout.addWidget(self.typeText)
+        self.leftTopLayout.addWidget(self.comboType)
+        self.leftTopLayout.addWidget(self.searchText)
+        self.leftTopLayout.addWidget(self.searchEntry)
+        self.leftTopLayout.addWidget(self.searchButton)
+        self.searchGropBox.setLayout(self.leftTopLayout)
+
+        # Middle Top
+        self.middleTopLayout.addWidget(self.allwoodmh)
+        self.middleTopLayout.addWidget(self.mainWood)
+        self.middleTopLayout.addWidget(self.headWood)
+        self.woodGroupBox.setLayout(self.middleTopLayout)
+
         # Right Top Layouts
-        # self.rightTopLayout.addWidget(self.searchText)
-        # self.rightTopLayout.addWidget(self.searchEntry)
-        # self.rightTopLayout.addWidget(self.searchButton)
-        self.rightTopLayout.addWidget(self.allwoodmh)
-        self.rightTopLayout.addWidget(self.mainWood)
-        self.rightTopLayout.addWidget(self.headWood)
-        self.woodGroupBox.setLayout(self.rightTopLayout)
+        self.rightTopLayout.addWidget(self.allwood)
+        self.rightTopLayout.addWidget(self.avaiableWood)
+        self.rightTopLayout.addWidget(self.unavaiableWood)
+        # self.rightTopLayout .addWidget(self.listBtn)
+        self.middleGropBox.setLayout(self.rightTopLayout)
 
-        # Right Middle Layouts
-        # self.rightBottomLayout.addWidget(self.searchText)
-        # self.rightBottomLayout.addWidget(self.searchEntry)
-        # self.rightBottomLayout.addWidget(self.searchButton)
-        # self.rightBottomLayout.addWidget(self.sizeText)
-        self.rightBottomLayout.addWidget(self.thickText)
-        self.rightBottomLayout.addWidget(self.comboThick)
-        self.rightBottomLayout.addWidget(self.wideText)
-        self.rightBottomLayout.addWidget(self.comboWide)
-        self.rightBottomLayout.addWidget(self.longText)
-        self.rightBottomLayout.addWidget(self.comboLong)
-        self.rightBottomLayout.addWidget(self.typeText)
-        self.rightBottomLayout.addWidget(self.comboType)
-        self.rightBottomLayout.addWidget(self.searchText)
-        self.rightBottomLayout.addWidget(self.searchEntry)
-        self.rightBottomLayout.addWidget(self.searchButton)
-        self.searchGropBox.setLayout(self.rightBottomLayout)
-
-        # Right Middle Layouts
-        self.rightMiddleLayout.addWidget(self.allwood)
-        self.rightMiddleLayout.addWidget(self.avaiableWood)
-        self.rightMiddleLayout.addWidget(self.unavaiableWood)
-        # self.rightMiddleLayout.addWidget(self.listBtn)
-        self.middleGropBox.setLayout(self.rightMiddleLayout)
-
-        #
-        self.mainLeftLayout.addWidget(self.homeTable)
+        # Table
+        self.mainTableLayout.addWidget(self.homeTable)
 
         # All Layout
         self.mainRightLayout.addWidget(self.searchGropBox)
         self.mainRightLayout.addWidget(self.woodGroupBox)
         self.mainRightLayout.addWidget(self.middleGropBox)
-
         self.mainLayout.addLayout(self.mainRightLayout)
-        self.mainLayout.addLayout(self.mainLeftLayout)
+        self.mainLayout.addLayout(self.mainTableLayout)
 
         # Main Layout
         self.wg.setLayout(self.mainLayout)
 
     # Display
-    def funcDisplayMain(self):
+    def funcFetchDataMain(self):
         for i in reversed(range(self.homeTable.rowCount())):
             self.homeTable.removeRow(i)
         query = db.dataTableHome()
@@ -215,55 +206,58 @@ class Ui_MainWindow(QMainWindow):
 
     # Search
     def funcSearfch(self):
-        value= self.searchEntry.text()
+        value = self.searchEntry.text()
         # print(value)
         if value == "":
-            QMessageBox.information(self,"Warning","Search cant be empty!!")
+            QMessageBox.information(self, "Warning", "Search cant be empty!!")
         else:
             self.searchEntry.setText("")
             results = db.search(value)
             print(results)
         return
+
     # List
     def fucnLis(self):
-        if self.allwood.isChecked() == True:
-            self.funcDisplayMain()
-            print("Sss")
-    ################################# Fucntion AddProduct ####################################
-    def funcAddInput(self):
+
+        print("Sss")
+
+    # Function  Input
+    def funcInput(self):
         self.newInput = inputWood.UI_Inputwood()
         self.hide()
 
-    ################################# Fucntion Cut  ##########################################
+    # Function Cut
     def funcCut(self):
         self.newCut = cuttingWood.UI_Cutwood()
         self.hide()
 
-    ################################# Fucntion Resize #########################################
+    # Function Resize
     def funcResize(self):
         self.newResize = resizeWood.UI_Resizewood()
         self.hide()
 
-    ################################# Fucntion Heat ###########################################
+    # Function Heat
     def funcHeat(self):
         self.newHeat = heatWood.UI_Heatwood()
         self.hide()
 
-    ################################# Fucntion Withdraw ######################################
+    # Function Withdraw
     def funcWithdraw(self):
         self.newWithdraw = withdrawWood.UI_Withdraw()
         self.hide()
 
-    ################################# Fucntion Sale ######################################
+    # Function Sale
     def funcSale(self):
         self.newSale = saleWood.UI_Salewood()
         self.hide()
 
-##################################### Main ###############################################
+
+# Main
 def main():
     app = QtWidgets.QApplication(sys.argv)
     window = Ui_MainWindow()
     sys.exit(app.exec_())
+
 
 if __name__ == "__main__":
     main()

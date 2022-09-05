@@ -1,45 +1,55 @@
 import sqlite3
+
 con = sqlite3.connect('dbDEMO.db')
 cur = con.cursor()
 
 class database():
 
-    def dataThick(self):
-        Thick = cur.execute("SELECT Thick From WoodSize")
+    def sqlThick(self):
+        sql = cur.execute("SELECT Thick From WoodSize")
         data_thick = []
-        thick_set = set(Thick)
+        thick_set = set(sql)
         for i in thick_set:
             data_thick.append(i[0])
         data_thick.sort()
         return data_thick
 
-    def dataWide(self):
-        Wide = cur.execute("SELECT Wide From WoodSize")
+    def sqlWide(self):
+        sql = cur.execute("SELECT Wide From WoodSize")
         data_wide = []
-        wide_set = set(Wide)
+        wide_set = set(sql)
         for i in wide_set:
             data_wide.append(i[0])
         data_wide.sort()
         return data_wide
 
-    def dataLong(self):
-        Long = cur.execute("SELECT Long From WoodSize")
+    def sqlLong(self):
+        sql = cur.execute("SELECT Long From WoodSize")
         data_long = []
-        long_set = set(Long)
+        long_set = set(sql)
         for i in long_set:
             data_long.append(i[0])
         data_long.sort()
         return data_long
 
-    def dataType(self):
-        Type = cur.execute("SELECT woodtype_name From WoodType")
+    def sqlType(self):
+        sql = cur.execute("SELECT woodtype_name From WoodType")
         data_type= []
-        for i in Type:
+        for i in sql:
             data_type.append(i[0])
+
         return data_type
 
+    def dataTableHome(self):
+        sql = cur.execute("SELECT Wood.Wood_id, Wood.Wood_code, Woodtype.Woodtype_name , "
+                                "WoodSize.Thick , WoodSize.Wide , WoodSize.Long , Quantity , volume  , activity  "
+                                "FROM Wood "
+                                "INNER JOIN WoodType ON Wood.WoodType = WoodType.Woodtype_id "
+                                "INNER JOIN WoodSize ON Wood.WoodSize = WoodSize.Woodsize_id ")
+        return  sql
+
     def dataTableInput(self):
-        tableInput = cur.execute("SELECT Input.Input_date , Wood.Wood_id , Woodtype.Woodtype_name , "
+        sql = cur.execute("SELECT Input.Input_date , Wood.Wood_id , Woodtype.Woodtype_name , "
                                  "WoodSize.Thick , WoodSize.Wide , WoodSize.Long , volume , Input.Supplier  "
                                  "FROM Wood "
                                  "INNER JOIN Input ON Wood.Input = Input.Input_id "
@@ -47,30 +57,32 @@ class database():
                                  "INNER JOIN WoodSize ON Wood.WoodSize = WoodSize.Woodsize_id "
                                  )
 
-        return  tableInput
+        return  sql
 
-    def dataTableHome(self):
-        tableHome = cur.execute("SELECT Wood.Wood_id,Wood.Wood_code, Woodtype.Woodtype_name , "
-                                "WoodSize.Thick , WoodSize.Wide , WoodSize.Long , Quantity , volume  , activity  "
-                                "FROM Wood "
-                                "INNER JOIN WoodType ON Wood.WoodType = WoodType.Woodtype_id "
-                                "INNER JOIN WoodSize ON Wood.WoodSize = WoodSize.Woodsize_id ")
-        return  tableHome
+    def dataTableHeat(self):
+        sql = cur.execute("SELECT Wood.Wood_code , WoodSize.Thick , WoodSize.Wide , WoodSize.Long ,  "
+                          "volume , Quantity , Input.Input_date , activity "
+                          "FROM Wood "
+                          "INNER JOIN WoodSize ON Wood.WoodSize = WoodSize.Woodsize_id  "
+                          "INNER JOIN Input ON Wood.Input = Input.Input_id"
+                          )
 
     def search(self, value):
-        query = ("SELECT Wood.Wood_id,Wood.Wood_code, Woodtype.Woodtype_name , "
-                "WoodSize.Thick , WoodSize.Wide , WoodSize.Long , Quantity , volume  , activity  "
-                "FROM Wood "
-                "INNER JOIN WoodType ON Wood.WoodType = WoodType.Woodtype_id "
-                "INNER JOIN WoodSize ON Wood.WoodSize = WoodSize.Woodsize_id "
-                )
-        results=cur.execute(query)
-        print(value)
-        return results
-
-    def updateInputTable(self,date):
-        # global prog
-       print(date)
-
-    def funcDisplayEidit(self):
         pass
+
+    def updateInputTable(self,check,date,id,type,thick,wide,long,volume,supplier):
+        # sql = cur.execute(("Update Wood set  Wood_id=? , volume=? Where Wood_id=?"),(id,volume,check))
+        # con.commit()\
+
+        sql = cur.execute(("Update Wood "
+                           "SET Wood_id=? ,"
+                           "WoodType=(select WoodType.Woodtype_id  FROM WoodType Where Woodtype.Woodtype_name=?) ,"
+                           "WoodSize=(Select WoodSize.Woodsize_id FROM WoodSize Where WoodSize.Thick=?  AND WoodSize.Wide=? AND WoodSize.Long=?) ,"
+                           "Input=(select Input.Input_id FROM Input WHERE Input.Supplier=? AND Input.Input_date=?) ,"
+                           "volume=? "
+                           "where Wood_id=?"
+                           ), (id,type,thick,wide,long,supplier,date, volume,check))
+        con.commit()
+
+    def funcDisplayEidit(self,check,date,id,type,thick,wide,long,volume,supplier):
+       pass

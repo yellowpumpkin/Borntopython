@@ -3,6 +3,11 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
+import sqlite3
+con = sqlite3.connect('dbDEMO.db')
+cur = con.cursor()
+
+
 from moduleDB import database
 db = database()
 
@@ -115,6 +120,7 @@ class UI_editsInputwood(QWidget):
 
 # Layout
     def layout(self):
+
         self.mainLayout = QVBoxLayout()
         self.topLayout = QHBoxLayout()
         self.midLayout = QHBoxLayout()
@@ -157,101 +163,73 @@ class UI_editsInputwood(QWidget):
         self.setLayout(self.mainLayout)
 
 # Update
-    def funcbtnhandleUpdateInfo(self):
+    def funcbtnhandleUpdateInfo2(self):
+
         check = self.check
         date = self.dateEditInputWood.text()
         id = self.woodidEntry.text()
-        g_type = self.get_type()
-        g_thick = self.get_thick()
-        g_wide = self.get_wide()
-        g_long = self.get_long()
+        type = self.woodtypeCombobox.currentText()
+        thick = int(self.thickCombobox.currentText())
+        wide = int(self.wideCombobox.currentText())
+        long = int(self.longCombobox.currentText())
         volume = float(self.volomeEntry.text())
         supplier = self.supplierEntry.text()
 
-        if (g_type == 'Fail' or g_thick == 'Fail' or g_wide == 'Fail' or g_long == 'Fail' ):
-            msg = QMessageBox()
-            msg.setWindowTitle("แก้ไขข้อมูล")
-            msg.setText("ไม่พบฐานข้อมูล")
-            msg.setIcon(QMessageBox.Warning)
-            msg.setDefaultButton(QMessageBox.Ignore)
-            msg.exec_()
-
-        elif (date and id and g_type and g_thick and g_wide and g_long and volume and supplier !=""):
-           
-            db.updateInputTable(check,date,id,g_type,g_thick,g_wide,g_long,volume,supplier)
+        if (date and id and type and thick and wide and long and volume and supplier !=""):
+            db.updateInputTable(check,date,id,type,thick,wide,long,volume,supplier)
             msg = QMessageBox()
             msg.setWindowTitle("แก้ไขข้อมูล")
             msg.setText("ยืนยันการแก้ไขข้อมูล")
-            msg.setIcon(QMessageBox.Information)
+            msg.setIcon(QMessageBox.Warning)
             msg.setDefaultButton(QMessageBox.Ignore)
             msg.buttonClicked.connect(self.funcbtnhandleCancelInfo)
             msg.exec_()
 
-# get_value
-    def get_type(self):
+        else: QMessageBox.information(self,"Info","ERRORRR")
+
+#Test
+    def funcbtnhandleUpdateInfo(self):
         sql_type = db.sqlType()
-        mylist = len(sql_type) - 1
-        value_type = self.woodtypeCombobox.currentText()
-        totem = False
-        i = 0
-        while True:
-            if (value_type  == sql_type[i]):
-                return value_type
-            else:
-                i += 1
-                if i > mylist:
-                    break
-        if totem == False:
-            return "Fail"
+        mylist = len(sql_type)-1
 
-    def get_thick(self):
-        sql_thick  = db.sqlThick()
-        mylist = len(sql_thick) - 1
-        value_thick = int(self.thickCombobox.currentText())
+        check = self.check
+        date = self.dateEditInputWood.text()
+        id = self.woodidEntry.text()
+        typee = self.woodtypeCombobox.currentText()
+        thick = int(self.thickCombobox.currentText())
+        wide = int(self.wideCombobox.currentText())
+        long = int(self.longCombobox.currentText())
+        volume = float(self.volomeEntry.text())
+        supplier = self.supplierEntry.text()
+        #
         totem = False
-        i = 0
-        while True:
-            if (value_thick  == sql_thick[i]):
-                return  value_thick
-            else:
-                i += 1
-                if i > mylist:
-                    break
-        if totem == False:
-            print("Fail")
-            return "Fail"
+        i=0
 
-    def get_wide(self):
-        sql_wide  = db.sqlWide()
-        mylist = len(sql_wide) - 1
-        value_wide = int(self.wideCombobox.currentText())
-        totem = False
-        i = 0
         while True:
-            if (value_wide  == sql_wide[i]):
-                return  value_wide
-            else:
-                i += 1
-                if i > mylist:
+        # for i  in range(len(sql_type)):
+            if(typee == sql_type[i]):
+                if (date and id and typee and thick and wide and long and volume and supplier != ""):
+                    db.updateInputTable(check, date, id, typee, thick, wide, long, volume, supplier)
+                    msg = QMessageBox()
+                    msg.setWindowTitle("แก้ไขข้อมูล")
+                    msg.setText("ยืนยันการแก้ไขข้อมูล")
+                    msg.setIcon(QMessageBox.Information)
+                    msg.setDefaultButton(QMessageBox.Ignore)
+                    msg.buttonClicked.connect(self.funcbtnhandleCancelInfo)
+                    msg.exec_()
+                    totem = True
                     break
-        if totem == False:
-            return "Fail"
+            else:
+                i+=1
+                if i > mylist : break
 
-    def get_long(self):
-        sql_long  = db.sqlLong()
-        mylist = len(sql_long) - 1
-        value_long = int(self.longCombobox.currentText())
-        totem = False
-        i = 0
-        while True:
-            if (value_long  == sql_long[i]):
-                return  value_long
-            else:
-                i += 1
-                if i > mylist:
-                    break
         if totem == False:
-            return "Fail"
+            msg = QMessageBox()
+            msg.setWindowTitle("แก้ไขข้อมูล")
+            msg.setText("ไม่พบ "+typee+" ในฐานข้อมูล")
+            msg.setIcon(QMessageBox.Warning)
+            msg.setDefaultButton(QMessageBox.Ignore)
+            msg.exec_()
 
 # Cancel
     def funcbtnhandleCancelInfo(self):
