@@ -81,7 +81,7 @@ class Ui_MainWindow(QMainWindow):
         self.searchEntry = QLineEdit()
         self.searchEntry.setPlaceholderText("Ex. 6328218")
         self.searchButton = QPushButton("Search")
-        self.searchButton.clicked.connect(self.funcSearfch)
+        self.searchButton.clicked.connect(self.funcSearch)
 
         self.allwoodmh = QRadioButton("All")
         self.mainWood = QRadioButton("Main")
@@ -205,16 +205,15 @@ class Ui_MainWindow(QMainWindow):
                 self.homeTable.setItem(row_number, column_number, QTableWidgetItem(str(data)))
 
     # Search
-    def funcSearfch(self):
+    def funcSearch(self):
         value = self.searchEntry.text()
-        # print(value)
         if value == "":
             QMessageBox.information(self, "Warning", "Search cant be empty!!")
         else:
-            self.searchEntry.setText("")
-            results = db.search(value)
+
+            results = db.search(self.searchEntry.text())
             print(results)
-        return
+
 
     # List
     def fucnLis(self):

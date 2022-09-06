@@ -149,31 +149,32 @@ class  UI_Heatwood (QMainWindow):
 
 # Display
     def funcFetchDataHeatWood(self):
-        for i in reversed(range(self.heatTable.rowCount())):
-            self.heatTable.removeRow(i)
-        query = db.dataTableHeat()
-        for row_data in query:
-            row_number = self.heatTable.rowCount()
-            self.heatTable.insertRow(row_number)
-            for column_number, data in enumerate(row_data):
-                self.heatTable.setItem(row_number, column_number, QTableWidgetItem(str(data)))
-            self.btn_edit = QPushButton('Edit')
-            self.btn_edit.setStyleSheet("""
-                        QPushButton {
-                            color:  black;
-                            border-style: solid;
-                            border-width: 3px;
-                            border-color:  #008CBA;
-                            border-radius: 12px
-                        }
-                        QPushButton:hover{
-                            background-color: #008CBA;
-                            color: white;
-                        }
-                    """)
-            # self.btn_edit.clicked.connect()
-            self.heatTable.setCellWidget(row_number, 8, self.btn_edit)
-        self.heatTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        pass
+        # for i in reversed(range(self.heatTable.rowCount())):
+        #     self.heatTable.removeRow(i)
+        # query = db.dataTableHeat()
+        # for row_data in query:
+        #     row_number = self.heatTable.rowCount()
+        #     self.heatTable.insertRow(row_number)
+        #     for column_number, data in enumerate(row_data):
+        #         self.heatTable.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        #     self.btn_edit = QPushButton('Edit')
+        #     self.btn_edit.setStyleSheet("""
+        #                 QPushButton {
+        #                     color:  black;
+        #                     border-style: solid;
+        #                     border-width: 3px;
+        #                     border-color:  #008CBA;
+        #                     border-radius: 12px
+        #                 }
+        #                 QPushButton:hover{
+        #                     background-color: #008CBA;
+        #                     color: white;
+        #                 }
+        #             """)
+        #     # self.btn_edit.clicked.connect()
+        #     self.heatTable.setCellWidget(row_number, 8, self.btn_edit)
+        # self.heatTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
 
 # Function Home
@@ -206,11 +207,11 @@ class  UI_Heatwood (QMainWindow):
         self.newSale=saleWood.UI_Salewood()
         self.close()
 
-# Main
-# def main():
-#     app = QtWidgets.QApplication(sys.argv)
-#     window=UI_Heatwood()
-#     sys.exit(app.exec_())
-#
-# if __name__ == "__main__":
-#    main()
+
+def main():
+    app = QtWidgets.QApplication(sys.argv)
+    window=UI_Heatwood()
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+   main()

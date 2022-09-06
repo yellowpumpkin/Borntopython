@@ -2,6 +2,7 @@ from PyQt5 import  QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from tkinter import *
 
 from moduleDB import database
 db = database()
@@ -21,8 +22,9 @@ class UI_editsInputwood(QWidget):
         self.inputWoodthick = inputdata[3]
         self.inputWoodtwide = inputdata[4]
         self.inputWoodtlong = inputdata[5]
-        self.inputWoodvolume = inputdata[6]
-        self.inputWoodsupplier = inputdata[7]
+        self.inputWoodquantity = inputdata[6]
+        self.inputWoodvolume = inputdata[7]
+        self.inputWoodsupplier = inputdata[8]
         self.check = input_id
 
         self.setFixedSize(self.size())
@@ -52,26 +54,47 @@ class UI_editsInputwood(QWidget):
         self.dateEditInputWood.setDisplayFormat('yyyy-MM-dd')
         self.dateEditInputWood.setMinimumDate(QtCore.QDate(2019, 1, 1))
         self.dateEditInputWood.setCalendarPopup(True)
+        self.dateEditInputWood.setReadOnly(True)
 
         self.woodidEntry = QLineEdit(self)
         self.woodidEntry.setText(self.inputWoodid)
-        self.woodtypeCombobox = QComboBox()
+        self.woodidEntry.setReadOnly(True)
 
+        self.woodtypeCombobox = QComboBox()
         self.woodtypeCombobox.addItems([str(self.inputWoodtype)])
+        i = True
+        Type = db.sqlType()
+        data_type=[]
+        for data_type in Type:
+            self.woodtypeCombobox.addItems([str(data_type)])
         self.woodtypeCombobox.setEditable(True)
 
         self.thickCombobox = QComboBox()
         self.thickCombobox.addItems([str(self.inputWoodthick)])
+        Thick = db.sqlThick()
+        for data_thick in Thick:
+            self.thickCombobox.addItems([str(data_thick)])
         self.thickCombobox.setEditable(True)
+
         self.wideCombobox = QComboBox()
         self.wideCombobox.addItem(self.inputWoodtwide)
+        Wide = db.sqlWide()
+        for data_wide in Wide:
+            self.wideCombobox.addItems([str(data_wide)])
         self.wideCombobox.setEditable(True)
+
         self.longCombobox = QComboBox()
         self.longCombobox.addItem(self.inputWoodtlong)
+        Long = db.sqlLong()
+        for data_long in Long:
+            self.longCombobox.addItems([str(data_long)])
         self.longCombobox.setEditable(True)
 
+        self.woodquantityEntry = QLineEdit(self)
+        self.woodquantityEntry.setText(self.inputWoodquantity)
         self.volomeEntry = QLineEdit()
         self.volomeEntry.setText(self.inputWoodvolume)
+        self.volomeEntry.setReadOnly(True)
         self.supplierEntry = QLineEdit()
         self.supplierEntry.setText(self.inputWoodsupplier)
 
@@ -140,6 +163,7 @@ class UI_editsInputwood(QWidget):
         self.bottomLayout.addRow(QLabel("หนา: "), self.thickCombobox)
         self.bottomLayout.addRow(QLabel("กว้าง: "), self.wideCombobox)
         self.bottomLayout.addRow(QLabel("ยาว: "), self.longCombobox)
+        self.bottomLayout.addRow(QLabel("จำนวน: "), self.woodquantityEntry)
         self.bottomLayout.addRow(QLabel("ปริมาตร: "), self.volomeEntry)
         self.bottomLayout.addRow(QLabel("Supplier: "), self.supplierEntry)
         self.bottomFrame.setLayout(self.bottomLayout)
@@ -151,7 +175,7 @@ class UI_editsInputwood(QWidget):
 
         # All Layout
         self.mainLayout.addWidget(self.text)
-        self.mainLayout.addWidget(self.middleFrame)
+        # self.mainLayout.addWidget(self.middleFrame)
         self.mainLayout.addWidget(self.bottomFrame)
         self.mainLayout.addLayout(self.btnbox)
         self.setLayout(self.mainLayout)
@@ -165,25 +189,27 @@ class UI_editsInputwood(QWidget):
         g_thick = self.get_thick()
         g_wide = self.get_wide()
         g_long = self.get_long()
+        quantity = int(self.woodquantityEntry.text())
         volume = float(self.volomeEntry.text())
         supplier = self.supplierEntry.text()
+
 
         if (g_type == 'Fail' or g_thick == 'Fail' or g_wide == 'Fail' or g_long == 'Fail' ):
             msg = QMessageBox()
             msg.setWindowTitle("แก้ไขข้อมูล")
-            msg.setText("ไม่พบฐานข้อมูล")
+            msg.setText("ไม่พบฐานข้อมูล กรุณากรอกใหม่อีกครั้งค่ะ")
             msg.setIcon(QMessageBox.Warning)
-            msg.setDefaultButton(QMessageBox.Ignore)
+            msg.setStandardButtons(QMessageBox.Ok)
             msg.exec_()
 
-        elif (date and id and g_type and g_thick and g_wide and g_long and volume and supplier !=""):
-           
-            db.updateInputTable(check,date,id,g_type,g_thick,g_wide,g_long,volume,supplier)
+        elif (date and id and g_type and g_thick and g_wide and g_long  and quantity and volume and supplier !=""):
+            db.updateInputTable(check,date,id,g_type,g_thick,g_wide,g_long,quantity,volume,supplier)
             msg = QMessageBox()
             msg.setWindowTitle("แก้ไขข้อมูล")
             msg.setText("ยืนยันการแก้ไขข้อมูล")
             msg.setIcon(QMessageBox.Information)
-            msg.setDefaultButton(QMessageBox.Ignore)
+            msg.setStandardButtons(QMessageBox.Ok)
+            # msg.setDefaultButton(QMessageBox.Ignore)
             msg.buttonClicked.connect(self.funcbtnhandleCancelInfo)
             msg.exec_()
 
@@ -218,7 +244,6 @@ class UI_editsInputwood(QWidget):
                 if i > mylist:
                     break
         if totem == False:
-            print("Fail")
             return "Fail"
 
     def get_wide(self):

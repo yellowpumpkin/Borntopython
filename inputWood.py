@@ -147,20 +147,19 @@ class UI_Inputwood(QMainWindow):
 # Table
     def displayTable(self):
         self.inputTable = QTableWidget()
-        self.inputTable.setColumnCount(9)
+        self.inputTable.setColumnCount(10)
         self.inputTable.setHorizontalHeaderItem(0, QTableWidgetItem("วันที่รับไม้เข้า"))
         self.inputTable.setHorizontalHeaderItem(1, QTableWidgetItem("รหัสไม้"))
         self.inputTable.setHorizontalHeaderItem(2, QTableWidgetItem("ประเภทไม้"))
         self.inputTable.setHorizontalHeaderItem(3, QTableWidgetItem("หนา"))
         self.inputTable.setHorizontalHeaderItem(4, QTableWidgetItem("กว้าง"))
         self.inputTable.setHorizontalHeaderItem(5, QTableWidgetItem("ยาว"))
-        self.inputTable.setHorizontalHeaderItem(6, QTableWidgetItem("ปริมาตร (m^3)"))
-        self.inputTable.setHorizontalHeaderItem(7, QTableWidgetItem("Supplier"))
-        self.inputTable.setHorizontalHeaderItem(8, QTableWidgetItem("Manage"))
+        self.inputTable.setHorizontalHeaderItem(6, QTableWidgetItem("จำนวน"))
+        self.inputTable.setHorizontalHeaderItem(7, QTableWidgetItem("ปริมาตร (m^3)"))
+        self.inputTable.setHorizontalHeaderItem(8, QTableWidgetItem("Supplier"))
+        self.inputTable.setHorizontalHeaderItem(9, QTableWidgetItem("Manage"))
         self.inputTable.doubleClicked.connect(self.funchandleButtonClicked)
-        self.inputTable.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-        self.inputTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        #
+
 
 # Layouts
     def layouts(self):
@@ -271,14 +270,14 @@ class UI_Inputwood(QMainWindow):
                         }
                     """)
             self.btn_edit.clicked.connect(self.funchandleButtonClicked)
-            self.inputTable.setCellWidget(row_number, 8, self.btn_edit)
+            self.inputTable.setCellWidget(row_number, 9, self.btn_edit)
         self.inputTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
 # Button Clicked
     def funchandleButtonClicked(self):
         global Input_id
         listInput = []
-        for i in range(0, 8):
+        for i in range(0, 9):
             listInput.append(self.inputTable.item(self.inputTable.currentRow(), i).text())
         Input_id = listInput[1]
         self.neweditInput = editsInputwood.UI_editsInputwood(listInput,Input_id)
