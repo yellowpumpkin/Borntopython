@@ -4,8 +4,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 import sys
-import sqlite3
-
 import heatWood
 import main
 import resizeWood
@@ -14,13 +12,9 @@ import withdrawWood
 import cuttingWood
 import editsInputwood
 
-from moduleDB import database
-
-con = sqlite3.connect('dbDEMO.db')
-cur = con.cursor()
-
+# from moduleDB import database
+from mySQL import database
 db = database()
-
 
 class UI_Inputwood(QMainWindow):
     def __init__(self):
@@ -128,12 +122,11 @@ class UI_Inputwood(QMainWindow):
         self.dateText = QLabel("วันที่รับไม้เข้า : ")
         self.date = QDateEdit(self)
         self.date.setDate(QDate.currentDate())
-        self.date.setDateTime(QtCore.QDateTime(QtCore.QDate(2023, 1, 1), QtCore.QTime(0, 0, 0)))
+        self.date.setDateTime(QtCore.QDateTime(QtCore.QDate()))
         self.date.setAcceptDrops(False)
         self.date.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.date.setAlignment(QtCore.Qt.AlignCenter)
         self.date.setDisplayFormat('yyyy-MM-dd')
-        self.date.setMinimumDate(QtCore.QDate(2019, 1, 1))
         self.date.setCurrentSection(QtWidgets.QDateTimeEdit.DaySection)
         self.date.setCalendarPopup(True)
 
@@ -247,9 +240,11 @@ class UI_Inputwood(QMainWindow):
 
 # Func
     def funcFetchData(self):
+
         for i in reversed(range(self.inputTable.rowCount())):
             self.inputTable.removeRow(i)
         query = db.dataTableInput()
+
         for row_data in query:
             row_number = self.inputTable.rowCount()
             self.inputTable.insertRow(row_number)

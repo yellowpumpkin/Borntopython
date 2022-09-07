@@ -11,8 +11,8 @@ import saleWood
 import withdrawWood
 import cuttingWood
 
-from moduleDB import database
-
+# from moduleDB import database
+from mySQL import database
 db = database()
 
 
@@ -198,6 +198,7 @@ class Ui_MainWindow(QMainWindow):
         for i in reversed(range(self.homeTable.rowCount())):
             self.homeTable.removeRow(i)
         query = db.dataTableHome()
+
         for row_data in query:
             row_number = self.homeTable.rowCount()
             self.homeTable.insertRow(row_number)
@@ -210,8 +211,8 @@ class Ui_MainWindow(QMainWindow):
         if value == "":
             QMessageBox.information(self, "Warning", "Search cant be empty!!")
         else:
-
-            results = db.search(self.searchEntry.text())
+            self.searchEntry.text()
+            results = db.search(value)
             print(results)
 
 

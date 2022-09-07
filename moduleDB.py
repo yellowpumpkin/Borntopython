@@ -73,9 +73,8 @@ class database():
 
     def search(self, value):
         print('%'+value+'%')
-        sql =  cur.execute(("SELECT Wood_code FROM Wood where Wood_code LIKE ?"),('%'+value+'%')).fetchall()
-        return sql
-
+        sql =  cur.execute(("SELECT Wood_code FROM Wood where Wood_code LIKE ?"),('%'+value+'%'))
+        con.commit()
 
     def updateInputTable(self,check,date,id,type,thick,wide,long,quantity,volume,supplier):
         # sql = cur.execute(("Update Wood set  Wood_id=? , volume=? Where Wood_id=?"),(id,volume,check))
