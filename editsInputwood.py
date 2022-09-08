@@ -3,11 +3,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-
-# from moduleDB import database
 from mySQL import database
 db = database()
-
 
 class UI_editsInputwood(QWidget):
     def __init__(self, inputdata , input_id):
@@ -63,27 +60,26 @@ class UI_editsInputwood(QWidget):
 
         self.woodtypeCombobox = QComboBox()
         self.woodtypeCombobox.addItems([str(self.inputWoodtype)])
-        i = True
+       # Type
         Type = db.sqlType()
-        data_type=[]
         for data_type in Type:
             self.woodtypeCombobox.addItems([str(data_type)])
         self.woodtypeCombobox.setEditable(True)
-
+        # Thick
         self.thickCombobox = QComboBox()
         self.thickCombobox.addItems([str(self.inputWoodthick)])
         Thick = db.sqlThick()
         for data_thick in Thick:
             self.thickCombobox.addItems([str(data_thick)])
         self.thickCombobox.setEditable(True)
-
+        # Wide
         self.wideCombobox = QComboBox()
         self.wideCombobox.addItem(self.inputWoodtwide)
         Wide = db.sqlWide()
         for data_wide in Wide:
             self.wideCombobox.addItems([str(data_wide)])
         self.wideCombobox.setEditable(True)
-
+        # Longs
         self.longCombobox = QComboBox()
         self.longCombobox.addItem(self.inputWoodtlong)
         Long = db.sqlLong()
@@ -98,6 +94,7 @@ class UI_editsInputwood(QWidget):
         self.volomeEntry.setReadOnly(True)
         self.supplierEntry = QLineEdit()
         self.supplierEntry.setText(self.inputWoodsupplier)
+        self.supplierEntry.setEnabled(True)
 
         # Btn
         self.updateBtn = QPushButton("แก้ไขข้อมูล")
@@ -194,7 +191,6 @@ class UI_editsInputwood(QWidget):
         volume = float(self.volomeEntry.text())
         supplier = self.supplierEntry.text()
 
-
         if (g_type == 'Fail' or g_thick == 'Fail' or g_wide == 'Fail' or g_long == 'Fail' ):
             msg = QMessageBox()
             msg.setWindowTitle("แก้ไขข้อมูล")
@@ -204,7 +200,7 @@ class UI_editsInputwood(QWidget):
             msg.exec_()
 
         elif (date and id and g_type and g_thick and g_wide and g_long  and quantity and volume and supplier !=""):
-            db.updateInputTable(check,date,id,g_type,g_thick,g_wide,g_long,quantity,volume,supplier)
+            db.updatedataInput(check,date,id,g_type,g_thick,g_wide,g_long,quantity,volume,supplier)
             msg = QMessageBox()
             msg.setWindowTitle("แก้ไขข้อมูล")
             msg.setText("ยืนยันการแก้ไขข้อมูล")
@@ -213,6 +209,7 @@ class UI_editsInputwood(QWidget):
             # msg.setDefaultButton(QMessageBox.Ignore)
             msg.buttonClicked.connect(self.funcbtnhandleCancelInfo)
             msg.exec_()
+
 
 # get_value
     def get_type(self):

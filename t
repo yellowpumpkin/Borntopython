@@ -109,8 +109,7 @@ class database():
     def searchHome(self, value):
         conn = self.generate_conn_singleton()
         cur = conn.cursor()
-        sql = "SELECT Wood_id, Wood_code  , WoodType.WoodType_name  , WoodSize.Thick , " \
-              "WoodSize.Wide , WoodSize.Longs , Inputs.Quantity , Volume , Activity "\
+        sql = "SELECT Wood_id, Wood_code  , WoodType.WoodType_name  , WoodSize.Thick ,WoodSize.Wide , WoodSize.Longs , Inputs.Quantity , Volume , Activity "\
               "FROM Wood INNER JOIN Inputs ON Wood.Inputs = Inputs.Input_id " \
               "INNER JOIN WoodType ON Wood.WoodType = WoodType.WoodType_id " \
               "INNER JOIN WoodSize ON Wood.WoodSize = WoodSize.WoodSize_id "\
@@ -137,44 +136,17 @@ class database():
         conn = self.generate_conn_singleton()
         cur = conn.cursor()
 
-        sql = 'UPDATE Wood SET Wood_id=%s , ' \
-              'WoodType=(select WoodType.WoodType_id  FROM WoodType Where WoodType.WoodType_name=%s) ,' \
-              'WoodSize=(Select WoodSize.Woodsize_id FROM WoodSize Where WoodSize.Thick=%s  AND WoodSize.Wide=%s AND WoodSize.Longs=%s) ,' \
-              'Inputs=(select Inputs.Input_id FROM Inputs WHERE Inputs.Supplier=%s AND Inputs.Date=%s AND Inputs.Quantity=%s) ,' \
-              'Volume=%s' \
-              'Where Wood_id=%s '
+        sql = "UPDATE Wood SET Wood_id=%s , " \
+              "WoodType=(select WoodType.WoodType_id  FROM WoodType Where WoodType.WoodType_name=%s) ," \
+              "WoodSize=(Select WoodSize.Woodsize_id FROM WoodSize Where WoodSize.Thick=%s  AND WoodSize.Wide=%s AND WoodSize.Longs=%s) ," \
+              "Inputs=(select Inputs.Input_id FROM Inputs WHERE Inputs.Supplier=%s AND Inputs.Date=%s AND Inputs.Quantity=%s) ," \
+              "Volume=%s" \
+              "Where Wood_id=%s "
         value = (id,g_type,g_thick,g_wide,g_long,supplier,date,quantity,volume,check)
         cur.execute(sql,value)
-        conn.commit()
 
-    def funcListAvailable(self):
-        conn = self.generate_conn_singleton()
-        cur = conn.cursor()
-
-        cur.execute("SELECT Wood_id, Wood_code , WoodType.WoodType_name , WoodSize.Thick , WoodSize.Wide , "
-                    "WoodSize.Longs , Inputs.Quantity , Volume , Activity "
-                    "FROM Wood "
-                    "INNER JOIN WoodType ON Wood.WoodType = WoodType.WoodType_id "
-                    "INNER JOIN WoodSize ON Wood.WoodSize = WoodSize.WoodSize_id "
-                    "INNER JOIN Inputs ON Wood.Inputs = Inputs.Input_id "
-                    "Where Wood.Activity='Available'")
-        data = cur.fetchall()
-        conn.close()
-        return data
-
-    def funcListUnavailable(self):
-        conn = self.generate_conn_singleton()
-        cur = conn.cursor()
-        cur.execute("SELECT Wood_id, Wood_code , WoodType.WoodType_name , WoodSize.Thick , WoodSize.Wide , "
-                    "WoodSize.Longs , Inputs.Quantity , Volume , Activity "
-                    "FROM Wood "
-                    "INNER JOIN WoodType ON Wood.WoodType = WoodType.WoodType_id "
-                    "INNER JOIN WoodSize ON Wood.WoodSize = WoodSize.WoodSize_id "
-                    "INNER JOIN Inputs ON Wood.Inputs = Inputs.Input_id "
-                    "Where Wood.Activity='Unavailable'")
-        data = cur.fetchall()
-        conn.close()
-        return data
+    def funcDisplayEidit(self,check,date,id,type,thick,wide,long,volume,supplier):
+       pass
 
 
 # mycursor.execute("CREATE TABLE WoodType(woodtype_name varchar(50) ,Woodtype_id	int PRIMARY KEY)")

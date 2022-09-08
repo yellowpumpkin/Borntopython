@@ -2,7 +2,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from  PyQt5.QtWidgets import *
 from  PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
-import sys
 
 import resizeWood
 import inputWood
@@ -145,6 +144,7 @@ class  UI_Cutwood (QMainWindow):
 
 # Main
 # def main():
+#    import sys
 #     app = QtWidgets.QApplication(sys.argv)
 #     window=UI_Heatwood()
 #     sys.exit(app.exec_())

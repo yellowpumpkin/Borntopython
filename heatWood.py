@@ -2,13 +2,6 @@ from PyQt5 import QtCore , QtWidgets
 from  PyQt5.QtWidgets import *
 from  PyQt5.QtGui import *
 from PyQt5.QtCore import *
-import sys
-import sqlite3
-from moduleDB import database
-con = sqlite3.connect('dbDEMO.db')
-cur = con.cursor()
-
-db = database()
 
 import resizeWood
 import inputWood
@@ -16,7 +9,6 @@ import withdrawWood
 import saleWood
 import main
 import cuttingWood
-
 
 class  UI_Heatwood (QMainWindow):
     def __init__(self):
@@ -207,11 +199,11 @@ class  UI_Heatwood (QMainWindow):
         self.newSale=saleWood.UI_Salewood()
         self.close()
 
-
-def main():
-    app = QtWidgets.QApplication(sys.argv)
-    window=UI_Heatwood()
-    sys.exit(app.exec_())
-
-if __name__ == "__main__":
-   main()
+# def main():
+#     import sys
+#     app = QtWidgets.QApplication(sys.argv)
+#     window=UI_Heatwood()
+#     sys.exit(app.exec_())
+#
+# if __name__ == "__main__":
+#    main()

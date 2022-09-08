@@ -278,43 +278,46 @@ class UI_Inputwood(QMainWindow):
         self.neweditInput = editsInputwood.UI_editsInputwood(listInput,Input_id)
     # Search
     def funcSearch(self):
-        value = self.searchEntry.text()
-        if value == "":
-            QMessageBox.information(self, " ", "Search cant be empty!!")
-        else:
-            self.searchEntry.text()
-            results = db.searchInput(value)
+        pass
+        # value = self.searchEntry.text()
+        # if value == "":
+        #     QMessageBox.information(self, " ", "Search cant be empty!!")
+        # else:
+        #     self.searchEntry.text()
+        #     results = db.searchInput(value)
+        #     print(results)
+        #     if results == []:
+        #         QMessageBox.information(self, " ", "wood id information not found")
+        #     else:
+        #         for i in reversed(range(self.inputTable.rowCount())):
+        #             self.inputTable.removeRow(i)
+        #         for row_data in results:
+        #             row_number = self.inputTable.rowCount()
+        #             self.inputTable.insertRow(row_number)
+        #             for column_number , data in enumerate(row_data):
+        #                 self.inputTable.setItem(row_number,column_number,QTableWidgetItem(str(data)))
+        #             self.btn_edit = QPushButton('Edit')
+        #             self.btn_edit.setStyleSheet("""
+        #                         QPushButton {
+        #                             color:  black;
+        #                             border-style: solid;
+        #                             border-width: 3px;
+        #                             border-color:  #008CBA;
+        #                             border-radius: 12px
+        #                         }
+        #                         QPushButton:hover{
+        #                             background-color: #008CBA;
+        #                             color: white;
+        #                         }
+        #                     """)
+        #             self.btn_edit.clicked.connect(self.funchandleButtonClicked)
+        #             self.inputTable.setCellWidget(row_number, 9, self.btn_edit)
+        #         self.inputTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-            if results == []:
-                QMessageBox.information(self, " ", "wood id information not found")
-            else:
-                for i in reversed(range(self.inputTable.rowCount())):
-                    self.inputTable.removeRow(i)
-                for row_data in results:
-                    row_number = self.inputTable.rowCount()
-                    self.inputTable.insertRow(row_number)
-                    for column_number , data in enumerate(row_data):
-                        self.inputTable.setItem(row_number,column_number,QTableWidgetItem(str(data)))
-                    self.btn_edit = QPushButton('Edit')
-                    self.btn_edit.setStyleSheet("""
-                                QPushButton {
-                                    color:  black;
-                                    border-style: solid;
-                                    border-width: 3px;
-                                    border-color:  #008CBA;
-                                    border-radius: 12px
-                                }
-                                QPushButton:hover{
-                                    background-color: #008CBA;
-                                    color: white;
-                                }
-                            """)
-                    self.btn_edit.clicked.connect(self.funchandleButtonClicked)
-                    self.inputTable.setCellWidget(row_number, 9, self.btn_edit)
-                self.inputTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def funcRefresh(self):
-       self.funcFetchData()
+        pass
+       # self.funcFetchData()
 
     def exportExcel(self):
         pass

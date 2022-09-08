@@ -11,10 +11,9 @@ import saleWood
 import withdrawWood
 import cuttingWood
 
-# from moduleDB import database
+
 from mySQL import database
 db = database()
-
 
 class Ui_MainWindow(QMainWindow):
     def __init__(self):
@@ -75,7 +74,7 @@ class Ui_MainWindow(QMainWindow):
     # Display
     def display(self):
         self.wg = QWidget()
-        self.setCentralWidget((self.wg))
+        self.setCentralWidget(self.wg)
 
         self.searchText = QLabel("Wood ID : ")
         self.searchEntry = QLineEdit()
@@ -88,9 +87,12 @@ class Ui_MainWindow(QMainWindow):
         self.headWood = QRadioButton("Head")
 
         self.allwood = QRadioButton("All Wood")
+        if self.allwood.isChecked() == True: print("d")
+
         self.avaiableWood = QRadioButton("Avaiable")
         self.unavaiableWood = QRadioButton("Unavaiable")
-        # self.listBtn = QPushButton("List")
+        self.listBtn = QPushButton("List")
+        self.listBtn.clicked.connect(self.fucnList)
 
         # combobox
         self.sizeText = QLabel("| ขนาดไม้ : ")
@@ -177,7 +179,7 @@ class Ui_MainWindow(QMainWindow):
         self.rightTopLayout.addWidget(self.allwood)
         self.rightTopLayout.addWidget(self.avaiableWood)
         self.rightTopLayout.addWidget(self.unavaiableWood)
-        # self.rightTopLayout .addWidget(self.listBtn)
+        self.rightTopLayout .addWidget(self.listBtn)
         self.middleGropBox.setLayout(self.rightTopLayout)
 
         # Table
@@ -197,7 +199,7 @@ class Ui_MainWindow(QMainWindow):
     def funcFetchDataMain(self):
         for i in reversed(range(self.homeTable.rowCount())):
             self.homeTable.removeRow(i)
-        query = db.dataTableHome()
+        query = db.fetchdataHome()
 
         for row_data in query:
             row_number = self.homeTable.rowCount()
@@ -209,17 +211,46 @@ class Ui_MainWindow(QMainWindow):
     def funcSearch(self):
         value = self.searchEntry.text()
         if value == "":
-            QMessageBox.information(self, "Warning", "Search cant be empty!!")
+            QMessageBox.information(self, " ", "Search cant be empty!!")
         else:
             self.searchEntry.text()
-            results = db.search(value)
-            print(results)
+            results = db.searchHome(value)
+
+            if results == []:
+                QMessageBox.information(self, " ", "wood id information not found")
+            else:
+                for i in reversed(range(self.homeTable.rowCount())):
+                    self.homeTable.removeRow(i)
+                for row_data in results:
+                    row_number = self.homeTable.rowCount()
+                    self.homeTable.insertRow(row_number)
+                    for column_number , data in enumerate(row_data):
+                        self.homeTable.setItem(row_number,column_number,QTableWidgetItem(str(data)))
 
 
     # List
-    def fucnLis(self):
+    def fucnList(self):
+        if self.allwood.isChecked() == True:
+            self.funcFetchDataMain()
+        elif self.avaiableWood.isChecked():
+            query = db.funcListAvailable()
+            for i in reversed(range(self.homeTable.rowCount())):
+                self.homeTable.removeRow(i)
+            for row_data in query:
+                row_number = self.homeTable.rowCount()
+                self.homeTable.insertRow(row_number)
+                for column_number, data in enumerate(row_data):
+                    self.homeTable.setItem(row_number, column_number, QTableWidgetItem(str(data)))
 
-        print("Sss")
+        elif self.unavaiableWood.isChecked():
+            query = db.funcListUnavailable()
+            for i in reversed(range(self.homeTable.rowCount())):
+                self.homeTable.removeRow(i)
+            for row_data in query:
+                row_number = self.homeTable.rowCount()
+                self.homeTable.insertRow(row_number)
+                for column_number, data in enumerate(row_data):
+                    self.homeTable.setItem(row_number, column_number, QTableWidgetItem(str(data)))
 
     # Function  Input
     def funcInput(self):
